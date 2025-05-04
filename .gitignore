@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.dbmdl
+*.log
+*.ncrunch*
+*.vscode/
+*.DS_Store
+*.swp
+*.bak
+*.tmp
+*.mdf
+*.ldf
