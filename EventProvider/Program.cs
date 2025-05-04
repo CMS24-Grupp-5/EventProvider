@@ -30,18 +30,6 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Events.AddRange(new List<Event>
-    {
-        new Event { Title = "Musikfestival", Date = DateTime.Parse("2025-06-15"), Location = "Stockholm", Description = "Beskrivning saknas." },
-        new Event { Title = "Hundmässan", Date = DateTime.Parse("2025-05-08"), Location = "Göteborg", Description = "Beskrivning saknas." },
-        new Event { Title = "Chokladfestival", Date = DateTime.Parse("2025-07-20"), Location = "Malmö", Description = "Beskrivning saknas." }
-    });
-    db.SaveChanges();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
