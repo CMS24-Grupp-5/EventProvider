@@ -10,6 +10,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         policy =>
         {
+
             policy.AllowAnyOrigin()
                   .AllowAnyMethod()
                   .AllowAnyHeader();
@@ -30,11 +31,8 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
@@ -43,5 +41,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (!db.Events.Any())
+    {
+        db.Events.Add(new Event { Title = "Swedish House Mafia", Date = DateTime.Now, Description = "Swedish House Mafia World tour", Location = "Stockholm"});
+        db.SaveChanges();
+    }
+}
 
 app.Run();
