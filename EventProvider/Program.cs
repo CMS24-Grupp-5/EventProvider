@@ -10,6 +10,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         policy =>
         {
+
             policy.AllowAnyOrigin()
                   .AllowAnyMethod()
                   .AllowAnyHeader();
@@ -30,23 +31,9 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Events.AddRange(new List<Event>
-    {
-        new Event { Title = "Musikfestival", Date = DateTime.Parse("2025-06-15"), Location = "Stockholm", Description = "Beskrivning saknas." },
-        new Event { Title = "Hundmässan", Date = DateTime.Parse("2025-05-08"), Location = "Göteborg", Description = "Beskrivning saknas." },
-        new Event { Title = "Chokladfestival", Date = DateTime.Parse("2025-07-20"), Location = "Malmö", Description = "Beskrivning saknas." }
-    });
-    db.SaveChanges();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
@@ -55,5 +42,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (!db.Events.Any())
+    {
+        db.Events.Add(new Event { Title = "Swedish House Mafia", Date = DateTime.Now, Description = "Swedish House Mafia World tour", Location = "Stockholm"});
+        db.SaveChanges();
+    }
+}
 
 app.Run();
