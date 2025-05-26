@@ -26,7 +26,7 @@ namespace EventProvider.Controllers
             return ev == null ? NotFound() : Ok(ev);
         }
 
-        [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Create(Event ev)
         {
@@ -34,7 +34,7 @@ namespace EventProvider.Controllers
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
 
-        [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Event ev)
         {
@@ -42,7 +42,7 @@ namespace EventProvider.Controllers
             return success ? NoContent() : NotFound();
         }
 
-        [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
